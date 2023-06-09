@@ -27,6 +27,13 @@ class HourLinePainter extends CustomPainter {
   /// left offset of vertical line.
   final double verticalLineOffset;
 
+  // DA@2023
+  /// Color of left vertical line.
+  final Color? verticalColor;
+
+  /// Height of left vertical line.
+  final double? verticalHeight;
+
   /// Style of the hour and vertical line
   final LineStyle lineStyle;
 
@@ -44,6 +51,8 @@ class HourLinePainter extends CustomPainter {
     required this.offset,
     required this.showVerticalLine,
     this.verticalLineOffset = 10,
+    this.verticalColor,
+    this.verticalHeight,
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
@@ -69,16 +78,23 @@ class HourLinePainter extends CustomPainter {
       }
     }
 
-    if (showVerticalLine) if (lineStyle == LineStyle.dashed) {
-      var startY = 0.0;
-      while (startY < size.height) {
-        canvas.drawLine(Offset(offset + verticalLineOffset, startY),
-            Offset(offset + verticalLineOffset, startY + dashWidth), paint);
-        startY += dashWidth + dashSpaceWidth;
+    if (showVerticalLine) {
+      // DA@2023
+      final paint = Paint()
+        ..color = verticalColor ?? lineColor
+        ..strokeWidth = verticalHeight ?? lineHeight;
+
+      if (lineStyle == LineStyle.dashed) {
+        var startY = 0.0;
+        while (startY < size.height) {
+          canvas.drawLine(Offset(offset + verticalLineOffset, startY),
+              Offset(offset + verticalLineOffset, startY + dashWidth), paint);
+          startY += dashWidth + dashSpaceWidth;
+        }
+      } else {
+        canvas.drawLine(Offset(offset + verticalLineOffset, 0),
+            Offset(offset + verticalLineOffset, size.height), paint);
       }
-    } else {
-      canvas.drawLine(Offset(offset + verticalLineOffset, 0),
-          Offset(offset + verticalLineOffset, size.height), paint);
     }
   }
 

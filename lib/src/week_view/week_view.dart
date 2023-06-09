@@ -88,6 +88,10 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Settings for live time indicator settings.
   final HourIndicatorSettings? liveTimeIndicatorSettings;
 
+  // DA@2023
+  /// Settings for day indicator settings.
+  final HourIndicatorSettings? dayIndicatorSettings;
+
   /// duration for page transition while changing the week.
   final Duration pageTransitionDuration;
 
@@ -198,6 +202,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.maxDay,
     this.initialDay,
     this.hourIndicatorSettings,
+    // DA@2023
+    this.dayIndicatorSettings,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.liveTimeIndicatorSettings,
@@ -260,6 +266,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   late HourIndicatorSettings _hourIndicatorSettings;
   late HourIndicatorSettings _liveTimeIndicatorSettings;
+  // DA@2023
+  late HourIndicatorSettings _dayIndicatorSettings;
 
   late PageController _pageController;
 
@@ -418,6 +426,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           eventTileBuilder: _eventTileBuilder,
                           heightPerMinute: widget.heightPerMinute,
                           hourIndicatorSettings: _hourIndicatorSettings,
+                          dayIndicatorSettings: _dayIndicatorSettings,
                           dates: dates,
                           showLiveLine: widget.showLiveTimeLineInAllDays ||
                               _showLiveTimeIndicator(dates),
@@ -507,6 +516,17 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     assert(_hourIndicatorSettings.height < _hourHeight,
         "hourIndicator height must be less than minuteHeight * 60");
+
+    // DA@2023
+    _dayIndicatorSettings = widget.dayIndicatorSettings ??
+        HourIndicatorSettings(
+          height: widget.heightPerMinute,
+          color: Constants.defaultBorderColor,
+          offset: 5,
+        );
+
+    assert(_dayIndicatorSettings.height < _hourHeight,
+        "dayIndicator height must be less than minuteHeight * 60");
 
     _weekTitleWidth =
         (_width - _timeLineWidth - _hourIndicatorSettings.offset) /

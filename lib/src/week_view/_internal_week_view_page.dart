@@ -36,6 +36,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
 
   /// Settings for hour indicator lines.
   final HourIndicatorSettings hourIndicatorSettings;
+  // DA@2023
+  /// Settings for day indicator lines.
+  final HourIndicatorSettings dayIndicatorSettings;
 
   /// Flag to display live line.
   final bool showLiveLine;
@@ -124,6 +127,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.controller,
     required this.timeLineBuilder,
     required this.hourIndicatorSettings,
+    required this.dayIndicatorSettings,
     required this.showLiveLine,
     required this.liveTimeIndicatorSettings,
     required this.heightPerMinute,
@@ -217,6 +221,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         minuteHeight: heightPerMinute,
                         verticalLineOffset: verticalLineOffset,
                         showVerticalLine: showVerticalLine,
+                        verticalColor: dayIndicatorSettings.color,
+                        verticalHeight: dayIndicatorSettings.height,
                       ),
                     ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
@@ -240,8 +246,8 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   border: Border(
                                     right: BorderSide(
-                                      color: hourIndicatorSettings.color,
-                                      width: hourIndicatorSettings.height,
+                                      color: dayIndicatorSettings.color,
+                                      width: dayIndicatorSettings.height,
                                     ),
                                   ),
                                 ),
