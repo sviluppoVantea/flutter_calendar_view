@@ -92,6 +92,9 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Settings for day indicator settings.
   final HourIndicatorSettings? dayIndicatorSettings;
 
+  /// Refresh indicator future.
+  final RefreshIndicatorFuture? refreshFuture;
+
   /// duration for page transition while changing the week.
   final Duration pageTransitionDuration;
 
@@ -204,6 +207,8 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.hourIndicatorSettings,
     // DA@2023
     this.dayIndicatorSettings,
+    // DA@2023
+    this.refreshFuture,
     this.timeLineBuilder,
     this.timeLineWidth,
     this.liveTimeIndicatorSettings,
@@ -268,6 +273,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   late HourIndicatorSettings _liveTimeIndicatorSettings;
   // DA@2023
   late HourIndicatorSettings _dayIndicatorSettings;
+  // DA@2023
+  late RefreshIndicatorFuture _refreshFuture;
 
   late PageController _pageController;
 
@@ -426,7 +433,10 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                           eventTileBuilder: _eventTileBuilder,
                           heightPerMinute: widget.heightPerMinute,
                           hourIndicatorSettings: _hourIndicatorSettings,
+                          // DA@2023
                           dayIndicatorSettings: _dayIndicatorSettings,
+                          // DA@2023:
+                          refreshFuture: _refreshFuture,
                           dates: dates,
                           showLiveLine: widget.showLiveTimeLineInAllDays ||
                               _showLiveTimeIndicator(dates),
@@ -528,9 +538,17 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     assert(_dayIndicatorSettings.height < _hourHeight,
         "dayIndicator height must be less than minuteHeight * 60");
 
+    // DA@2023
+    _refreshFuture = widget.refreshFuture ?? _defaultRefreshFuture;
+
     _weekTitleWidth =
         (_width - _timeLineWidth - _hourIndicatorSettings.offset) /
             _totalDaysInWeek;
+  }
+
+  // DA@2023
+  Future<void> _defaultRefreshFuture() {
+    return Future.value();
   }
 
   void _calculateHeights() {

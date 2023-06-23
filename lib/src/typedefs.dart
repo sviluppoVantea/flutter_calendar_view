@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'calendar_event_data.dart';
 import 'enumerations.dart';
 
+// DA@2023:
+// Added refresh indicator type.
+typedef RefreshIndicatorFuture = Future Function();
+
 typedef CellBuilder<T extends Object?> = Widget Function(
   DateTime date,
   List<CalendarEventData<T>> event,

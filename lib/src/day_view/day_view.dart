@@ -182,6 +182,10 @@ class DayView<T extends Object?> extends StatefulWidget {
   /// Display full day event builder.
   final FullDayEventBuilder<T>? fullDayEventBuilder;
 
+  // DA@2023
+  /// Refresh indicator future.
+  final RefreshIndicatorFuture? refreshFuture;
+
   final bool showHalfHours;
 
   /// Main widget for day view.
@@ -217,6 +221,8 @@ class DayView<T extends Object?> extends StatefulWidget {
     this.minuteSlotSize = MinuteSlotSize.minutes60,
     this.headerStyle = const HeaderStyle(),
     this.fullDayEventBuilder,
+    // DA@2023
+    this.refreshFuture,
     this.safeAreaOption = const SafeAreaOption(),
     this.scrollPhysics,
     this.pageViewPhysics,
@@ -268,6 +274,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
   late DateWidgetBuilder _dayTitleBuilder;
 
   late FullDayEventBuilder<T> _fullDayEventBuilder;
+  // DA@2023
+  late RefreshIndicatorFuture _refreshFuture;
 
   late DetectorBuilder _dayDetectorBuilder;
 
@@ -415,6 +423,8 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
                           minuteSlotSize: widget.minuteSlotSize,
                           scrollNotifier: _scrollConfiguration,
                           fullDayEventBuilder: _fullDayEventBuilder,
+                          // DA@2023
+                          refreshFuture: _refreshFuture,
                           scrollController: _scrollController,
                           showHalfHours: widget.showHalfHours,
                           halfHourIndicatorSettings: _halfHourIndicatorSettings,
@@ -477,6 +487,9 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
     assert(_hourIndicatorSettings.height < _hourHeight,
         "hourIndicator height must be less than minuteHeight * 60");
 
+    // DA@2023
+    _refreshFuture = widget.refreshFuture ?? _defaultRefreshFuture;
+
     _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
         HourIndicatorSettings(
           height: widget.heightPerMinute,
@@ -486,6 +499,11 @@ class DayViewState<T extends Object?> extends State<DayView<T>> {
 
     assert(_halfHourIndicatorSettings.height < _hourHeight,
         "halfHourIndicator height must be less than minuteHeight * 60");
+  }
+
+  // DA@2023
+  Future<void> _defaultRefreshFuture() {
+    return Future.value();
   }
 
   void _calculateHeights() {

@@ -40,6 +40,9 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
   /// Settings for day indicator lines.
   final HourIndicatorSettings dayIndicatorSettings;
 
+  /// Refresh indicator future.
+  final RefreshIndicatorFuture refreshFuture;
+
   /// Flag to display live line.
   final bool showLiveLine;
 
@@ -127,7 +130,10 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
     required this.controller,
     required this.timeLineBuilder,
     required this.hourIndicatorSettings,
+    // DA@2023
     required this.dayIndicatorSettings,
+    // DA@2023
+    required this.refreshFuture,
     required this.showLiveLine,
     required this.liveTimeIndicatorSettings,
     required this.heightPerMinute,
@@ -205,91 +211,99 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: SizedBox(
-                height: height,
-                width: width,
-                child: Stack(
-                  children: [
-                    CustomPaint(
-                      size: Size(width, height),
-                      painter: HourLinePainter(
-                        lineColor: hourIndicatorSettings.color,
-                        lineHeight: hourIndicatorSettings.height,
-                        offset: timeLineWidth + hourIndicatorSettings.offset,
-                        minuteHeight: heightPerMinute,
-                        verticalLineOffset: verticalLineOffset,
-                        showVerticalLine: showVerticalLine,
-                        verticalColor: dayIndicatorSettings.color,
-                        verticalHeight: dayIndicatorSettings.height,
-                      ),
-                    ),
-                    if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-                      LiveTimeIndicator(
-                        liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-                        width: width,
-                        height: height,
-                        heightPerMinute: heightPerMinute,
-                        timeLineWidth: timeLineWidth,
-                      ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        width: weekTitleWidth * filteredDates.length,
-                        height: height,
-                        child: Row(
-                          children: [
-                            ...List.generate(
-                              filteredDates.length,
-                              (index) => Container(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(
-                                      color: dayIndicatorSettings.color,
-                                      width: dayIndicatorSettings.height,
-                                    ),
-                                  ),
-                                ),
-                                height: height,
-                                width: weekTitleWidth,
-                                child: Stack(
-                                  children: [
-                                    weekDetectorBuilder(
-                                      width: weekTitleWidth,
-                                      height: height,
-                                      heightPerMinute: heightPerMinute,
-                                      date: dates[index],
-                                      minuteSlotSize: minuteSlotSize,
-                                    ),
-                                    EventGenerator<T>(
-                                      height: height,
-                                      date: filteredDates[index],
-                                      onTileTap: onTileTap,
-                                      width: weekTitleWidth,
-                                      eventArranger: eventArranger,
-                                      eventTileBuilder: eventTileBuilder,
-                                      scrollNotifier: scrollConfiguration,
-                                      events: controller
-                                          .getEventsOnDay(filteredDates[index]),
-                                      heightPerMinute: heightPerMinute,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
+            // DA@2023
+            // Added refresh indicator.
+            child: RefreshIndicator.adaptive(
+              displacement: 20,
+              onRefresh: refreshFuture,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                clipBehavior: Clip.antiAlias,
+                controller: scrollController,
+                child: SizedBox(
+                  height: height,
+                  width: width,
+                  child: Stack(
+                    children: [
+                      CustomPaint(
+                        size: Size(width, height),
+                        painter: HourLinePainter(
+                          lineColor: hourIndicatorSettings.color,
+                          lineHeight: hourIndicatorSettings.height,
+                          offset: timeLineWidth + hourIndicatorSettings.offset,
+                          minuteHeight: heightPerMinute,
+                          verticalLineOffset: verticalLineOffset,
+                          showVerticalLine: showVerticalLine,
+                          verticalColor: dayIndicatorSettings.color,
+                          verticalHeight: dayIndicatorSettings.height,
                         ),
                       ),
-                    ),
-                    TimeLine(
-                      timeLineWidth: timeLineWidth,
-                      hourHeight: hourHeight,
-                      height: height,
-                      timeLineOffset: timeLineOffset,
-                      timeLineBuilder: timeLineBuilder,
-                    ),
-                  ],
+                      if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+                        LiveTimeIndicator(
+                          liveTimeIndicatorSettings: liveTimeIndicatorSettings,
+                          width: width,
+                          height: height,
+                          heightPerMinute: heightPerMinute,
+                          timeLineWidth: timeLineWidth,
+                        ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: SizedBox(
+                          width: weekTitleWidth * filteredDates.length,
+                          height: height,
+                          child: Row(
+                            children: [
+                              ...List.generate(
+                                filteredDates.length,
+                                (index) => Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      right: BorderSide(
+                                        color: dayIndicatorSettings.color,
+                                        width: dayIndicatorSettings.height,
+                                      ),
+                                    ),
+                                  ),
+                                  height: height,
+                                  width: weekTitleWidth,
+                                  child: Stack(
+                                    children: [
+                                      weekDetectorBuilder(
+                                        width: weekTitleWidth,
+                                        height: height,
+                                        heightPerMinute: heightPerMinute,
+                                        date: dates[index],
+                                        minuteSlotSize: minuteSlotSize,
+                                      ),
+                                      EventGenerator<T>(
+                                        height: height,
+                                        date: filteredDates[index],
+                                        onTileTap: onTileTap,
+                                        width: weekTitleWidth,
+                                        eventArranger: eventArranger,
+                                        eventTileBuilder: eventTileBuilder,
+                                        scrollNotifier: scrollConfiguration,
+                                        events: controller.getEventsOnDay(
+                                            filteredDates[index]),
+                                        heightPerMinute: heightPerMinute,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      TimeLine(
+                        timeLineWidth: timeLineWidth,
+                        hourHeight: hourHeight,
+                        height: height,
+                        timeLineOffset: timeLineOffset,
+                        timeLineBuilder: timeLineBuilder,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
