@@ -43,7 +43,6 @@ linter:
     iterable_contains_unrelated_type: true
     list_remove_unrelated_type: true
     literal_only_boolean_expressions: true
-    always_require_non_null_named_parameters: true
     omit_local_variable_types: true
     annotate_overrides: true
     avoid_init_to_null: true

@@ -230,12 +230,17 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         painter: HourLinePainter(
                           lineColor: hourIndicatorSettings.color,
                           lineHeight: hourIndicatorSettings.height,
+                          // DA@2023: Added dash support.
+                          lineStyle: hourIndicatorSettings.lineStyle,
+                          dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
+                          dashWidth: hourIndicatorSettings.dashWidth,
                           offset: timeLineWidth + hourIndicatorSettings.offset,
                           minuteHeight: heightPerMinute,
                           verticalLineOffset: verticalLineOffset,
                           showVerticalLine: showVerticalLine,
                           verticalColor: dayIndicatorSettings.color,
                           verticalHeight: dayIndicatorSettings.height,
+                          verticalLineStyle: dayIndicatorSettings.lineStyle,
                         ),
                       ),
                       if (showLiveLine && liveTimeIndicatorSettings.height > 0)

@@ -34,8 +34,13 @@ class HourLinePainter extends CustomPainter {
   /// Height of left vertical line.
   final double? verticalHeight;
 
-  /// Style of the hour and vertical line
+  // DA@2023
+  // Modified line styles
+  /// Style of the hour line
   final LineStyle lineStyle;
+
+  /// Style of the vertical line
+  final LineStyle verticalLineStyle;
 
   /// Line dash width when using the [LineStyle.dashed] style
   final double dashWidth;
@@ -53,6 +58,7 @@ class HourLinePainter extends CustomPainter {
     this.verticalLineOffset = 10,
     this.verticalColor,
     this.verticalHeight,
+    this.verticalLineStyle = LineStyle.solid,
     this.lineStyle = LineStyle.solid,
     this.dashWidth = 4,
     this.dashSpaceWidth = 4,
@@ -84,7 +90,7 @@ class HourLinePainter extends CustomPainter {
         ..color = verticalColor ?? lineColor
         ..strokeWidth = verticalHeight ?? lineHeight;
 
-      if (lineStyle == LineStyle.dashed) {
+      if (verticalLineStyle == LineStyle.dashed) {
         var startY = 0.0;
         while (startY < size.height) {
           canvas.drawLine(Offset(offset + verticalLineOffset, startY),
