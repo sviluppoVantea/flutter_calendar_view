@@ -243,14 +243,6 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                           verticalLineStyle: dayIndicatorSettings.lineStyle,
                         ),
                       ),
-                      if (showLiveLine && liveTimeIndicatorSettings.height > 0)
-                        LiveTimeIndicator(
-                          liveTimeIndicatorSettings: liveTimeIndicatorSettings,
-                          width: width,
-                          height: height,
-                          heightPerMinute: heightPerMinute,
-                          timeLineWidth: timeLineWidth,
-                        ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: SizedBox(
@@ -307,6 +299,17 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         timeLineOffset: timeLineOffset,
                         timeLineBuilder: timeLineBuilder,
                       ),
+                      if (showLiveLine && liveTimeIndicatorSettings.height > 0)
+                        IgnorePointer(
+                          child: LiveTimeIndicator(
+                            liveTimeIndicatorSettings:
+                                liveTimeIndicatorSettings,
+                            width: width,
+                            height: height,
+                            heightPerMinute: heightPerMinute,
+                            timeLineWidth: timeLineWidth,
+                          ),
+                        ),
                     ],
                   ),
                 ),
